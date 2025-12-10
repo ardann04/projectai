@@ -1,0 +1,215 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="zxx">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="description" content="Hitung Template" />
+  <meta name="keywords" content="Hitung, unica, creative, html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <title>Hitung</title>
+
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700,800,900&display=swap"
+    rel="stylesheet" />
+
+  <!-- Css Styles -->
+  <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" type="text/css">
+  <link rel="stylesheet" href="{% static 'css/font-awesome.min.css' %}" type="text/css">
+  <link rel="stylesheet" href="{% static 'css/owl.carousel.min.css' %}" type="text/css">
+  <link rel="stylesheet" href="{% static 'css/magnific-popup.css' %}" type="text/css">
+  <link rel="stylesheet" href="{% static 'css/slicknav.min.css' %}" type="text/css">
+  <link rel="stylesheet" href="{% static 'css/style.css' %}" type="text/css">
+  <link rel="stylesheet" href="{% static 'css/class.css' %}">
+
+
+  <style>
+    .header-section {
+      background-image: url("{% static 'img/hero-bg.jpg' %}");
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      padding: 20px 0;
+    }
+
+    .header-section .mainmenu ul li a {
+      color: #fff;
+    }
+
+    .header-section .mainmenu ul li a:hover {
+      color: #ffb320;
+    }
+
+    .signup-btn {
+      color: #fff;
+      border: 1px solid #fff;
+    }
+
+    .signup-btn:hover {
+      background-color: #ffb320;
+      border-color: #ffb320;
+      color: #000;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Page Preloder -->
+  <div id="preloder">
+    <div class="loader"></div>
+  </div>
+
+  <!-- Header Section Begin -->
+  <header class="header-section" style="padding-top: 20px;">
+    <div class="container">
+      <div class="nav-menu">
+        <nav class="mainmenu mobile-menu">
+          <ul>
+            <li><a href="{% url 'index' %}">Home</a></li>
+            <li><a href="{% url 'about' %}">About</a></li>
+            <li class="active"><a href="{% url 'classes' %}">Classes</a></li>
+          </ul>
+        </nav>
+        <div id="mobile-menu-wrap"></div>
+      </div>
+    </div>
+  </header>
+  <!-- Header Section End -->
+
+  <!-- Register Section Begin -->
+  <section class="register-section spad">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-lg-8">
+          <div class="register-text">
+            <div class="section-title text-center">
+              <h2>rekomendasi workout</h2>
+              <p>
+                Masukkan informasi Anda untuk mendapatkan rekomendasi workout
+              </p>
+            </div>
+
+            <form method="POST">
+              {% csrf_token %}
+              <div class="row">
+                <!-- Usia -->
+                <div class="col-lg-6">
+                  <label for="age">Usia</label>
+                  <input type="number" id="age" name="Age" min="10" max="80" required placeholder="Contoh: 25" />
+                </div>
+
+                <!-- Jenis Kelamin -->
+                <div class="col-lg-6">
+                  <label for="gender">Jenis Kelamin</label>
+                  <select id="gender" name="Gender" required>
+                    <option value="">Pilih</option>
+                    <option value="Male">Laki-laki</option>
+                    <option value="Female">Perempuan</option>
+                  </select>
+                </div>
+
+                <!-- Level Pengalaman -->
+                <div class="col-lg-6">
+                  <label for="experience">Level Pengalaman</label>
+                  <select id="experience" name="Experience_Level" required>
+                    <option value="">-- Pilih --</option>
+                    <option value="0">Pemula</option>
+                    <option value="1">Menengah</option>
+                    <option value="2">Lanjutan</option>
+                  </select>
+                </div>
+
+                <!-- Tinggi Badan -->
+                <div class="col-lg-6">
+                  <label for="height">Tinggi Badan (meter)</label>
+                  <input type="number" step="0.01" id="height" name="Height_m" min="1.00" max="2.50" required
+                    placeholder="Contoh: 1.70" />
+                </div>
+
+                <!-- Berat Badan -->
+                <div class="col-lg-6">
+                  <label for="weight">Berat Badan (kg)</label>
+                  <input type="number" step="0.1" id="weight" name="Weight_kg" min="30" max="200" required
+                    placeholder="Contoh: 65.5" />
+                </div>
+                
+                <!-- Durasi Sesi -->
+                <div class="col-lg-6">
+                  <label for="duration">Durasi Sesi Latihan (jam)</label>
+                  <input type="number" step="0.1" id="duration" name="Session_Duration_hours" min="0.1" max="6" required
+                    placeholder="Contoh: 1.5" />
+                </div>
+
+                <!-- Asupan Air -->
+                <div class="col-lg-6">
+                  <label for="water">Asupan Air per Hari (liter)</label>
+                  <input type="number" step="0.1" id="water" name="Water_Intake_liters" min="0.1" max="10" required
+                    placeholder="Contoh: 2.5" />
+                </div>
+
+                <!-- Frekuensi Latihan -->
+                <div class="col-lg-6">
+                  <label for="frequency">Frekuensi Latihan per Minggu (hari)</label>
+                  <input type="number" id="frequency" name="Workout_Frequency_days_per_week" min="1" max="7" required
+                    placeholder="Contoh: 3" />
+                </div>
+              </div>
+
+              <!-- Tombol Submit -->
+              <div class="text-center mt-3">
+                <button type="submit" class="btn btn-primary">Submit</button>
+              </div>
+            </form>
+
+            <!-- Menampilkan Hasil Prediksi -->
+{% if form_submitted %}
+  <table class="prediction-table mt-4">
+    <thead>
+      <tr>
+        <th>Kami Merekomendasikan Workout</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        {% if result %}
+          <td class="text-success">{{ result }}</td>
+        {% else %}
+          <td class="danger">Tidak ada hasil prediksi</td>
+        {% endif %}
+      </tr>
+    </tbody>
+  </table>
+{% endif %}
+
+          </div>
+        </div>
+      </div>
+  </section>
+  <!-- Register Section End -->
+
+  <!-- Footer Section Begin -->
+   <footer class="footer-section">
+        <div class="container">
+            <div class="row">
+                <p>&copy;<p><!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+   &copy;<script>document.write(new Date().getFullYear());</script> <i class="fa fa-heart" aria-hidden="true"></i> </a>
+  <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. --></p></p>
+                </div>
+            </div>
+        </div>
+    </footer>
+  <!-- Footer Section End -->
+
+  <!-- Js Plugins -->
+  <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+  <script src="{% static 'js/bootstrap.min.js' %}"></script>
+  <script src="{% static 'js/jquery.magnific-popup.min.js' %}"></script>
+  <script src="{% static 'js/mixitup.min.js' %}"></script>
+  <script src="{% static 'js/jquery.slicknav.js' %}"></script>
+  <script src="{% static 'js/owl.carousel.min.js' %}"></script>
+  <script src="{% static 'js/main.js' %}"></script>
+</body>
+
+</html>

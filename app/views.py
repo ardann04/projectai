@@ -41,46 +41,35 @@ def index(request):
 
 
 # =========================================================
-# 3. LOAD CHATBOT – **SUPER FAST GPU MODE**
+# 3. LOAD CHATBOT DARI HUGGINGFACE
 # =========================================================
-MODEL_PATH = os.path.join(os.path.dirname(__file__), "../models/gym_final_merged")
+print("🚀 Downloading AI Chatbot model from HuggingFace...")
 
-print("🚀 Loading ChatBot Ultra-Fast GPU...")
+HF_REPO = "ardannn/pojectai"
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
 dtype = torch.float16 if device == "cuda" else torch.float32
 
-# tokenizer fast=True (lebih cepat)
 tokenizer = AutoTokenizer.from_pretrained(
-    MODEL_PATH,
+    HF_REPO,
     use_fast=True
 )
 
-# load model ke GPU full
 chat_model = AutoModelForCausalLM.from_pretrained(
-    MODEL_PATH,
+    HF_REPO,
     torch_dtype=dtype,
-    device_map="cuda",
+    device_map="auto",
     low_cpu_mem_usage=True
 )
 
 chat_model.eval()
 
+print("🔥 Chatbot Loaded on:", device)
 
-# compile model → speed ++
-try:
-    chat_model = torch.compile(chat_model, mode="reduce-overhead", fullgraph=True)
-    print("⚡ torch.compile ENABLED (reduce-overhead mode)")
-except:
-    print("⚠ torch.compile not available")
-
-
-# warmup (sangat penting)
-with torch.inference_mode(), torch.cuda.amp.autocast():
+# warmup
+with torch.no_grad():
     dummy = tokenizer("hi", return_tensors="pt").to(device)
     chat_model.generate(**dummy, max_new_tokens=1)
-
-print("🔥 Chatbot Loaded on:", device)
 
 
 
@@ -88,29 +77,28 @@ print("🔥 Chatbot Loaded on:", device)
 # 4. CLEANING
 # =========================================================
 def clean_response(text):
-    t = text.split("Assistant:")[-1]
-    return t.strip()
+    if "Assistant:" in text:
+        return text.split("Assistant:")[-1].strip()
+    return text.strip()
 
 
 
 # =========================================================
-# 5. GENERATOR SUPER CEPAT (LATENCY RENDAH)
+# 5. FAST GENERATOR
 # =========================================================
 def generate_response_fast(user_input):
 
-    # prompt SESINGKAT MUNGKIN → mempercepat processing
     prompt = f"User: {user_input}\nAssistant:"
 
     inputs = tokenizer(prompt, return_tensors="pt").to(device)
 
-    with torch.inference_mode(), torch.cuda.amp.autocast():
+    with torch.no_grad():
         output = chat_model.generate(
             **inputs,
             max_new_tokens=128,
-            do_sample=True,              # deterministic → cepat
-            use_cache=True,               # speed++
-            repetition_penalty=1.05,
+            do_sample=True,
             temperature=0.7,
+            repetition_penalty=1.05,
             pad_token_id=tokenizer.eos_token_id,
         )
 
@@ -201,11 +189,9 @@ def predict_api(request):
 
         df = pd.DataFrame([row], columns=feature_columns)
 
-        # binning
         for col, bins in binning_info.items():
             df[col] = df[col].apply(lambda x: bin_value(x, bins))
 
-        # encoding
         for col, enc in label_encoders.items():
             if col in df.columns:
                 df[col] = enc.transform(df[col])
